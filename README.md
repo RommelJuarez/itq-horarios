@@ -49,7 +49,7 @@ Sistema web de planificación académica para el Instituto Superior Tecnológico
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/itq-horarios.git
+git clone https://github.com/RommelJuarez/itq-horarios.git
 cd itq-horarios
 ```
 
@@ -65,14 +65,14 @@ Crea un archivo `.env` en la raíz del proyecto:
 
 ```env
 # Base de datos PostgreSQL
-DATABASE_URL="postgresql://USUARIO:PASSWORD@HOST:5432/NOMBRE_DB?schema=public"
+DATABASE_URL=""
 
 # NextAuth
-AUTH_SECRET=tu_secret_aqui
-AUTH_URL=http://localhost:3000
+AUTH_SECRET=
+AUTH_URL=
 
 # Google Gemini (opcional — para generación con IA)
-GEMINI_API_KEY=tu_api_key_aqui
+GEMINI_API_KEY=
 ```
 
 ### 4. Generar el cliente Prisma
@@ -89,8 +89,6 @@ pnpm prisma generate
 ```bash
 pnpm dev
 ```
-
-Abre [http://localhost:3000](http://localhost:3000) en el navegador.
 
 ---
 
@@ -132,20 +130,6 @@ Abre [http://localhost:3000](http://localhost:3000) en el navegador.
 
 Para establecer la contraseña del administrador, ejecuta en la consola de base de datos:
 
-```sql
-UPDATE usuarios
-SET password_hash = '$2b$10$...'  -- hash generado con bcrypt
-WHERE email = 'admin@itq.edu.ec';
-```
-
-O usa el script incluido:
-
-```bash
-node scripts/set-password.js admin@itq.edu.ec tu_nueva_contrasena
-```
-
----
-
 ## Despliegue en Vercel
 
 1. Conecta el repositorio en [vercel.com](https://vercel.com)
@@ -173,6 +157,6 @@ node scripts/set-password.js admin@itq.edu.ec tu_nueva_contrasena
 
 ## Licencia
 
-MIT License — Copyright (c) 2026 Instituto Superior Tecnológico Quito
+MIT License — Copyright (c) 2026 Rommel Juarez
 
 Consulta el archivo [LICENSE](LICENSE) para más detalles.
