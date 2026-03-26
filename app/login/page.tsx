@@ -77,23 +77,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-3 max-w-xs">
-            {[
-              { num: '3',    label: 'Modulos' },
-              { num: '5',    label: 'Niveles' },
-              { num: '25',   label: 'Docentes' },
-            ].map(s => (
-              <div
-                key={s.label}
-                className="rounded p-3 text-center"
-                style={{ backgroundColor: '#3D3D3D' }}
-              >
-                <p className="text-white font-bold text-lg" style={{ fontFamily: 'Lato, sans-serif' }}>{s.num}</p>
-                <p className="text-xs" style={{ color: '#8B969D' }}>{s.label}</p>
-              </div>
-            ))}
-          </div>
+          
         </div>
 
         {/* Footer */}
