@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd /c \"mkdir C:\\\\Users\\\\cap03\\\\Downloads\\\\itq-horarios\\\\app\\\\api\\\\auth\\\\[...nextauth] 2>nul & mkdir C:\\\\Users\\\\cap03\\\\Downloads\\\\itq-horarios\\\\app\\\\login 2>nul & mkdir C:\\\\Users\\\\cap03\\\\Downloads\\\\itq-horarios\\\\app\\\\dashboard 2>nul\")",
+      "Bash(cmd /c \"npx next build 2>&1\")",
+      "Bash(npx next:*)",
+      "Bash(node -e \"const { PrismaClient } = require\\(''@prisma/client''\\); const p = new PrismaClient\\(\\); p.$connect\\(\\).then\\(\\(\\) => { console.log\\(''DB conectada OK''\\); return p.usuario.count\\(\\); }\\).then\\(n => { console.log\\(''Usuarios en BD:'', n\\); p.$disconnect\\(\\); }\\).catch\\(e => { console.error\\(''Error:'', e.message\\); p.$disconnect\\(\\); }\\);\")",
+      "Bash(cmd /c \"mkdir C:\\\\Users\\\\cap03\\\\Downloads\\\\itq-horarios\\\\components\\\\ui 2>nul & mkdir C:\\\\Users\\\\cap03\\\\Downloads\\\\itq-horarios\\\\components\\\\layout 2>nul\")",
+      "Bash(npm list:*)",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}

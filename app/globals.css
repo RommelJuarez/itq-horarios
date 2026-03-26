@@ -1,0 +1,75 @@
+/* RUTA: app/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  body {
+    background-color: #F5F5F5;
+    color: #2D3B45;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  input[type="date"] {
+    position: relative;
+    cursor: pointer;
+  }
+
+  ::-webkit-scrollbar        { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track  { background: transparent; }
+  ::-webkit-scrollbar-thumb  { background: #C7CDD1; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #8B969D; }
+
+  *:focus-visible {
+    outline: 2px solid #CC0000;
+    outline-offset: 2px;
+  }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 4px;
+}
+
+@layer components {
+  .card-strip {
+    height: 5px;
+    width: 100%;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #556572;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+
+  .btn-modalidad { display: block; }
+  .btn-mat  { background: #FFF1F1; color: #CC0000; border: 1px solid #FFCCCC; }
+  .btn-mat:hover  { background: #CC0000; color: white; }
+  .btn-noc  { background: #EEF4FB; color: #0374B5; border: 1px solid #BDD4EE; }
+  .btn-noc:hover  { background: #0374B5; color: white; }
+  .btn-con  { background: #F0FFF7; color: #0B874B; border: 1px solid #BBDDCC; }
+  .btn-con:hover  { background: #0B874B; color: white; }
+}

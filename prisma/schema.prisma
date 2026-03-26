@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Rol {
+  ADMIN
+  COORDINADOR
+  DOCENTE
+  ADMINISTRATIVO
+}
+
+enum TipoDocente {
+  TC
+  TP
+  MT
+}
+
+enum Jornada {
+  MATUTINA
+  NOCTURNA
+}
+
+enum EstadoAsignacion {
+  PENDIENTE
+  ASIGNADO
+  CONFIRMADO
+}
+
+model Usuario {
+  id           Int      @id @default(autoincrement())
+  nombre       String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(150)
+  passwordHash String   @default("") @map("password_hash")
+  rol          Rol
+  activo       Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  docente      Docente?
+  @@map("usuarios")
+}
+
+model Carrera {
+  id               Int             @id @default(autoincrement())
+  nombre           String          @db.VarChar(150)
+  codigo           String          @unique @db.VarChar(20)
+  sede             String          @default("QUITO") @db.VarChar(100)
+  activo           Boolean         @default(true)
+  asignaturas      Asignatura[]
+  nivelesParalelos NivelParalelo[]
+  @@map("carreras")
+}
+
+model PeriodoAcademico {
+  id               Int             @id @default(autoincrement())
+  nombre           String          @db.VarChar(100)
+  anio             Int
+  numero           Int
+  fechaInicio      DateTime        @map("fecha_inicio") @db.Date
+  fechaFin         DateTime        @map("fecha_fin") @db.Date
+  activo           Boolean         @default(true)
+  modulos          Modulo[]
+  nivelesParalelos NivelParalelo[]
+  cargasHorarias   CargaHoraria[]
+  @@unique([anio, numero])
+  @@map("periodos_academicos")
+}
+
+model Modulo {
+  id               Int                     @id @default(autoincrement())
+  periodoId        Int                     @map("periodo_id")
+  numero           Int
+  nombre           String                  @db.VarChar(50)
+  fechaInicio      DateTime                @map("fecha_inicio") @db.Date
+  fechaFin         DateTime                @map("fecha_fin") @db.Date
+  horasMatutino    Int                     @default(36) @map("horas_matutino")
+  horasNocturno    Int                     @default(27) @map("horas_nocturno")
+  periodo          PeriodoAcademico        @relation(fields: [periodoId], references: [id], onDelete: Cascade)
+  asignaciones     Asignacion[]
+  disponibilidades DisponibilidadDocente[]
+  cargasHorarias   CargaHoraria[]
+  @@unique([periodoId, numero])
+  @@map("modulos")
+}
+
+model Docente {
+  id               Int                     @id @default(autoincrement())
+  usuarioId        Int?                    @unique @map("usuario_id")
+  nombre           String                  @db.VarChar(150)
+  tipo             TipoDocente
+  especialidad     String?                 @db.VarChar(200)
+  horasMin         Int                     @default(0) @map("horas_min")
+  horasMax         Int                     @default(999) @map("horas_max")
+  activo           Boolean                 @default(true)
+  usuario          Usuario?                @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+  asignaciones     Asignacion[]
+  disponibilidades DisponibilidadDocente[]
+  cargasHorarias   CargaHoraria[]
+  @@map("docentes")
+}
+
+model DisponibilidadDocente {
+  id        Int     @id @default(autoincrement())
+  docenteId Int     @map("docente_id")
+  moduloId  Int     @map("modulo_id")
+  jornada   Jornada
+  horario   String  @db.VarChar(20)
+  docente   Docente @relation(fields: [docenteId], references: [id], onDelete: Cascade)
+  modulo    Modulo  @relation(fields: [moduloId], references: [id], onDelete: Cascade)
+  @@unique([docenteId, moduloId, jornada, horario])
+  @@map("disponibilidad_docentes")
+}
+
+model Asignatura {
+  id            Int          @id @default(autoincrement())
+  carreraId     Int          @map("carrera_id")
+  nombre        String       @db.VarChar(200)
+  codigo        String?      @db.VarChar(30)
+  nivel         Int
+  horasMatutino Int          @default(36) @map("horas_matutino")
+  horasNocturno Int          @default(27) @map("horas_nocturno")
+  activo        Boolean      @default(true)
+  carrera       Carrera      @relation(fields: [carreraId], references: [id], onDelete: Cascade)
+  asignaciones  Asignacion[]
+  @@map("asignaturas")
+}
+
+model NivelParalelo {
+  id           Int              @id @default(autoincrement())
+  periodoId    Int              @map("periodo_id")
+  carreraId    Int              @map("carrera_id")
+  nivel        Int
+  paralelo     String           @db.VarChar(5)
+  jornada      Jornada
+  sede         String           @default("QUITO") @db.VarChar(100)
+  activo       Boolean          @default(true)
+  periodo      PeriodoAcademico @relation(fields: [periodoId], references: [id], onDelete: Cascade)
+  carrera      Carrera          @relation(fields: [carreraId], references: [id], onDelete: Cascade)
+  asignaciones Asignacion[]
+  @@unique([periodoId, carreraId, nivel, paralelo, jornada, sede])
+  @@map("niveles_paralelos")
+}
+
+model Asignacion {
+  id              Int              @id @default(autoincrement())
+  moduloId        Int              @map("modulo_id")
+  docenteId       Int?             @map("docente_id")
+  asignaturaId    Int              @map("asignatura_id")
+  nivelParaleloId Int              @map("nivel_paralelo_id")
+  horario         String           @db.VarChar(20)
+  aula            String?          @db.VarChar(50)
+  estado          EstadoAsignacion @default(PENDIENTE)
+  observacion     String?
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  modulo          Modulo           @relation(fields: [moduloId], references: [id], onDelete: Cascade)
+  docente         Docente?         @relation(fields: [docenteId], references: [id], onDelete: SetNull)
+  asignatura      Asignatura       @relation(fields: [asignaturaId], references: [id], onDelete: Cascade)
+  nivelParalelo   NivelParalelo    @relation(fields: [nivelParaleloId], references: [id], onDelete: Cascade)
+  @@unique([moduloId, nivelParaleloId, horario], name: "uq_no_choque_paralelo")
+  @@index([moduloId, docenteId], name: "idx_asignacion_modulo_docente")
+  @@map("asignaciones")
+}
+
+model CargaHoraria {
+  id          Int              @id @default(autoincrement())
+  docenteId   Int              @map("docente_id")
+  periodoId   Int              @map("periodo_id")
+  moduloId    Int              @map("modulo_id")
+  horasModulo Int              @default(0) @map("horas_modulo")
+  horasSemana Decimal          @default(0) @map("horas_semana") @db.Decimal(5, 2)
+  valorHora   Decimal          @default(0) @map("valor_hora") @db.Decimal(8, 2)
+  docente     Docente          @relation(fields: [docenteId], references: [id], onDelete: Cascade)
+  periodo     PeriodoAcademico @relation(fields: [periodoId], references: [id], onDelete: Cascade)
+  modulo      Modulo           @relation(fields: [moduloId], references: [id], onDelete: Cascade)
+  @@unique([docenteId, periodoId, moduloId])
+  @@map("cargas_horarias")
+}
